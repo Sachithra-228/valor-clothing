@@ -129,11 +129,11 @@ export function ProductForm({ product, categories, collections, uploadsEnabled }
         <Field label="Description" error={errors.description} className="sm:col-span-2">
           <textarea name="description" defaultValue={product?.description} rows={4} className={cn(inputClass, "h-auto py-3 leading-6")} />
         </Field>
-        <Field label="Price (USD)" error={errors.price}>
-          <input name="price" type="number" min="0" step="0.01" defaultValue={product?.price} className={inputClass} />
+        <Field label="Price (LKR)" error={errors.price}>
+          <input name="price" type="number" min="0" step="1" defaultValue={product?.price} className={inputClass} />
         </Field>
-        <Field label="Sale price (optional)" error={errors.salePrice} hint="Shown instead of the price, with the price crossed out.">
-          <input name="salePrice" type="number" min="0" step="0.01" defaultValue={product?.salePrice} className={inputClass} />
+        <Field label="Sale price (LKR, optional)" error={errors.salePrice} hint="Shown instead of the price, with the price crossed out.">
+          <input name="salePrice" type="number" min="0" step="1" defaultValue={product?.salePrice} className={inputClass} />
         </Field>
         <Field label="Stock" error={errors.stock} hint="0 marks the product as out of stock.">
           <input name="stock" type="number" min="0" step="1" defaultValue={product?.stock ?? 0} className={inputClass} />

@@ -39,7 +39,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <Accordion
               items={[
                 { title: "Description", content: product.description },
-                { title: "Shipping", content: "Complimentary express shipping on orders above $250. Dispatches in 1-2 business days." },
+                { title: "Shipping", content: "Dispatches in 1-2 business days. The delivery charge is confirmed on WhatsApp when you place your order." },
                 { title: "Returns", content: "Return eligible items within 14 days in original condition with all garment tags attached." },
                 { title: "Reviews", content: "Rated 4.9 by private clients for fabric weight, silhouette, and finish." }
               ]}

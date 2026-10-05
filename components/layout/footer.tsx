@@ -1,6 +1,14 @@
 import Link from "next/link";
-import { Instagram, Mail, Twitter } from "lucide-react";
+import { Facebook, Instagram, MessageCircle, Music2 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { WHATSAPP_DISPLAY, socialLinks } from "@/lib/site";
+
+const socials = [
+  { label: "Instagram", href: socialLinks.instagram, icon: Instagram },
+  { label: "TikTok", href: socialLinks.tiktok, icon: Music2 },
+  { label: "Facebook", href: socialLinks.facebook, icon: Facebook },
+  { label: `WhatsApp ${WHATSAPP_DISPLAY}`, href: socialLinks.whatsapp, icon: MessageCircle }
+];
 
 export function Footer() {
   return (
@@ -19,9 +27,11 @@ export function Footer() {
         </div>
         <div className="grid content-start gap-3 text-sm text-white/55">
           <p className="mb-2 text-xs uppercase tracking-[.24em] text-white">Social</p>
-          <span className="flex items-center gap-2"><Instagram className="h-4 w-4" /> Instagram</span>
-          <span className="flex items-center gap-2"><Twitter className="h-4 w-4" /> X</span>
-          <span className="flex items-center gap-2"><Mail className="h-4 w-4" /> Studio</span>
+          {socials.map(({ label, href, icon: Icon }) => (
+            <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition hover:text-white">
+              <Icon className="h-4 w-4" /> {label}
+            </a>
+          ))}
         </div>
         <form className="content-start">
           <p className="mb-4 text-xs uppercase tracking-[.24em]">Newsletter</p>
