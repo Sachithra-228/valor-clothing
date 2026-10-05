@@ -4,25 +4,23 @@ import { Accordion } from "@/components/ui/accordion";
 import { ProductActions } from "@/components/shop/product-actions";
 import { ProductCard } from "@/components/shop/product-card";
 import { formatPrice } from "@/lib/utils";
-import { getProduct, products } from "@/lib/data";
+import { getProductBySlug, getProducts } from "@/lib/products";
 
-export function generateStaticParams() {
-  return products.map((product) => ({ id: product.id }));
-}
+export const dynamic = "force-dynamic";
 
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const product = getProduct(id);
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const [product, products] = await Promise.all([getProductBySlug(slug), getProducts()]);
   if (!product) notFound();
-  const related = products.filter((item) => item.id !== product.id).slice(0, 4);
+  const related = products.filter((item) => item.slug !== product.slug).slice(0, 4);
 
   return (
     <main className="px-5 pt-28 md:px-8">
       <section className="mx-auto grid max-w-[1500px] gap-10 lg:grid-cols-[1.15fr_.85fr]">
         <div className="grid gap-5 md:grid-cols-2">
-          {product.images.concat(product.images).slice(0, 4).map((image, index) => (
-            <div key={`${image}-${index}`} className="relative aspect-[4/5] overflow-hidden rounded-lg bg-white/5">
-              <Image src={image} alt={product.name} fill priority={index === 0} className="object-cover" />
+          {product.images.slice(0, 4).map((image, index) => (
+            <div key={image} className="relative aspect-[4/5] overflow-hidden rounded-lg bg-white/5">
+              <Image src={image} alt={product.name} fill priority={index === 0} sizes="(min-width: 1024px) 28vw, (min-width: 768px) 50vw, 100vw" className="object-cover" />
             </div>
           ))}
         </div>
@@ -47,12 +45,16 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               ]}
             />
           </div>
+          <div className="mt-10">
+            <p className="mb-3 text-xs uppercase tracking-[.2em] text-white/45">Size Guide</p>
+            <Image src="/sizechart.jpeg" alt="VALOR size chart in inches" width={1536} height={1024} className="w-full rounded-lg border border-white/10" />
+          </div>
         </aside>
       </section>
       <section className="mx-auto max-w-[1500px] py-24">
         <h2 className="mb-10 font-display text-4xl uppercase md:text-6xl">Related Products</h2>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {related.map((item) => <ProductCard key={item.id} product={item} />)}
+          {related.map((item) => <ProductCard key={item.slug} product={item} />)}
         </div>
       </section>
     </main>

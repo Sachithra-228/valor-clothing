@@ -5,19 +5,26 @@ import { OrbitalScene } from "@/components/animations/orbital-scene";
 import { Reveal } from "@/components/animations/reveal";
 import { ProductCard } from "@/components/shop/product-card";
 import { Button } from "@/components/ui/button";
-import { campaignImages, categories, products } from "@/lib/data";
+import { LogoImage } from "@/components/ui/logo";
+import { campaignImages } from "@/lib/data";
+import { getProducts, uniqueValues } from "@/lib/products";
 
+export const dynamic = "force-dynamic";
 
-export default function Home() {
+export default async function Home() {
+  const products = await getProducts();
+  const categories = uniqueValues(products, "category");
+  const collections = uniqueValues(products, "collection");
+
   return (
     <main>
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-5">
-        <Image src={campaignImages.hero} alt="VALOR editorial campaign" fill priority className="object-cover opacity-55" />
+        <Image src={campaignImages.hero} alt="VALOR editorial campaign" fill priority sizes="100vw" className="object-cover opacity-55" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0,rgba(0,0,0,.38)_38%,#000_100%)]" />
         <div className="absolute inset-0 opacity-50"><OrbitalScene /></div>
         <div className="relative z-10 mx-auto max-w-6xl text-center">
           <Reveal>
-            <p className="mb-8 font-display text-4xl font-black uppercase tracking-[.7em] text-white md:text-7xl">VALOR</p>
+            <LogoImage priority className="mx-auto mb-10 h-9 md:h-14" />
           </Reveal>
           <Reveal delay={0.12}>
             <h1 className="font-display text-6xl font-black uppercase leading-[.88] md:text-9xl lg:text-[10.5rem]">Defined by Valor.</h1>
@@ -39,7 +46,7 @@ export default function Home() {
 
       <section className="overflow-hidden border-y border-white/10 py-5">
         <div className="marquee flex w-[200%] gap-10 whitespace-nowrap font-display text-5xl uppercase text-white/15 md:text-8xl">
-          {Array.from({ length: 8 }).map((_, index) => <span key={index}>New Discipline / Core Noir / Winter Silence /</span>)}
+          {Array.from({ length: 8 }).map((_, index) => <span key={index}>New Discipline / {collections.join(" / ")} /</span>)}
         </div>
       </section>
 
@@ -47,22 +54,22 @@ export default function Home() {
         <div className="mx-auto max-w-[1500px]">
           <Reveal className="mb-10 flex items-end justify-between gap-6">
             <div>
-              <p className="text-xs uppercase tracking-[.24em] text-white/40">Featured Collection</p>
-              <h2 className="mt-4 font-display text-5xl uppercase md:text-7xl">Core Noir</h2>
+              <p className="text-xs uppercase tracking-[.24em] text-white/40">Featured</p>
+              <h2 className="mt-4 font-display text-5xl uppercase md:text-7xl">New Arrivals</h2>
             </div>
             <Link href="/collections" className="hidden items-center gap-2 text-xs uppercase tracking-[.2em] text-white/55 transition hover:text-white md:flex">View all <ArrowRight className="h-4 w-4" /></Link>
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {products.slice(0, 4).map((product, index) => <Reveal key={product.id} delay={index * 0.05}><ProductCard product={product} priority={index < 2} /></Reveal>)}
+            {products.slice(0, 4).map((product, index) => <Reveal key={product.slug} delay={index * 0.05}><ProductCard product={product} priority={index < 2} /></Reveal>)}
           </div>
         </div>
       </section>
 
       <section className="px-5 pb-24 md:px-8">
-        <div className="mx-auto grid max-w-[1500px] gap-5 lg:grid-cols-5">
+        <div className="mx-auto grid max-w-[1500px] gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {categories.map((category, index) => (
             <Reveal key={category} delay={index * 0.05} className="group relative min-h-[420px] overflow-hidden rounded-lg bg-white/5 lg:odd:mt-16">
-              <Image src={products[index % products.length].images[0]} alt={category} fill className="object-cover opacity-65 transition duration-700 group-hover:scale-105 group-hover:opacity-90" />
+              <Image src={products.find((product) => product.category === category)!.images[0]} alt={category} fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" className="object-cover opacity-65 transition duration-700 group-hover:scale-105 group-hover:opacity-90" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
               <div className="absolute inset-x-5 bottom-5">
                 <p className="text-xs uppercase tracking-[.24em] text-white/45">Category</p>
@@ -95,7 +102,7 @@ export default function Home() {
       </section>
 
       <section className="relative min-h-[80vh] overflow-hidden px-5 py-24 md:px-8">
-        <Image src={campaignImages.video} alt="VALOR fashion campaign" fill className="object-cover opacity-55" />
+        <Image src={campaignImages.video} alt="VALOR fashion campaign" fill sizes="100vw" className="object-cover opacity-55" />
         <div className="absolute inset-0 bg-black/45" />
         <Reveal className="relative z-10 mx-auto flex min-h-[60vh] max-w-[1500px] flex-col justify-end">
           <div className="flex items-center gap-3 text-xs uppercase tracking-[.24em] text-white/55"><Film className="h-4 w-4" /> Campaign Film</div>
@@ -109,8 +116,8 @@ export default function Home() {
           <Reveal><h2 className="font-display text-5xl uppercase md:text-8xl">Lookbook</h2></Reveal>
           <div className="mt-10 columns-1 gap-5 sm:columns-2 lg:columns-3">
             {[...products, ...products.slice(0, 3)].map((product, index) => (
-              <Reveal key={`${product.id}-${index}`} className="mb-5 break-inside-avoid overflow-hidden rounded-lg">
-                <Image src={product.images[index % 2]} alt="VALOR lookbook" width={700} height={index % 2 ? 980 : 760} className="w-full object-cover transition duration-700 hover:scale-[1.025]" />
+              <Reveal key={`${product.slug}-${index}`} className="mb-5 break-inside-avoid overflow-hidden rounded-lg">
+                <Image src={product.images[index % product.images.length]} alt="VALOR lookbook" width={700} height={index % 2 ? 980 : 760} className="w-full object-cover transition duration-700 hover:scale-[1.025]" />
               </Reveal>
             ))}
           </div>

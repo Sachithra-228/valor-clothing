@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-black px-5 py-16 md:px-8">
       <div className="mx-auto grid max-w-[1500px] gap-12 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
         <div>
-          <Logo className="text-3xl" />
+          <Logo className="h-7" />
           <p className="mt-6 max-w-sm text-sm leading-7 text-white/55">Precision silhouettes, limited capsules, and quiet materials for the modern uniform.</p>
         </div>
         <div className="grid gap-3 text-sm text-white/55">

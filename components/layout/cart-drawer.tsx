@@ -4,13 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { products } from "@/lib/data";
 import { formatPrice } from "@/lib/utils";
-import { useStore } from "./providers";
+import { useCartItems, useStore } from "./providers";
 
 export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { cart, removeFromCart } = useStore();
-  const items = cart.map((item) => ({ ...item, product: products.find((product) => product.id === item.productId)! }));
+  const { removeFromCart } = useStore();
+  const items = useCartItems();
   const subtotal = items.reduce((sum, item) => sum + (item.product.salePrice ?? item.product.price) * item.quantity, 0);
 
   return (

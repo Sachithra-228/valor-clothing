@@ -1,9 +1,10 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { CartItem } from "@/types/product";
+import type { CartItem, Product } from "@/types/product";
 
 type StoreContext = {
+  products: Product[];
   cart: CartItem[];
   wishlist: string[];
   addToCart: (item: CartItem) => void;
@@ -14,6 +15,7 @@ type StoreContext = {
 const Context = createContext<StoreContext | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
+  const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
 
@@ -22,11 +24,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setWishlist(JSON.parse(localStorage.getItem("valor-wishlist") || "[]"));
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/products", { signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : []))
+      .then(setProducts)
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
+
   useEffect(() => localStorage.setItem("valor-cart", JSON.stringify(cart)), [cart]);
   useEffect(() => localStorage.setItem("valor-wishlist", JSON.stringify(wishlist)), [wishlist]);
 
   const value = useMemo<StoreContext>(
     () => ({
+      products,
       cart,
       wishlist,
       addToCart: (item) =>
@@ -43,7 +55,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       toggleWishlist: (id) =>
         setWishlist((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))
     }),
-    [cart, wishlist]
+    [products, cart, wishlist]
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
@@ -53,4 +65,17 @@ export function useStore() {
   const context = useContext(Context);
   if (!context) throw new Error("useStore must be used within StoreProvider");
   return context;
+}
+
+// Cart lines joined to their products. Lines whose product is not loaded (or no longer exists) are skipped.
+export function useCartItems() {
+  const { cart, products } = useStore();
+  return useMemo(
+    () =>
+      cart.flatMap((item) => {
+        const product = products.find((entry) => entry.slug === item.productId);
+        return product ? [{ ...item, product }] : [];
+      }),
+    [cart, products]
+  );
 }

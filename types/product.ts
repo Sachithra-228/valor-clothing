@@ -1,5 +1,5 @@
 export type Product = {
-  id: string;
+  slug: string;
   name: string;
   category: string;
   collection: string;
@@ -9,9 +9,11 @@ export type Product = {
   gender: "Men" | "Women" | "Unisex";
   colors: string[];
   sizes: string[];
+  stock: number;
   inStock: boolean;
   description: string;
   images: string[];
+  createdAt: string;
 };
 
 export type CartItem = {

@@ -1,13 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useStore } from "@/components/layout/providers";
-import { products } from "@/lib/data";
+import { useCartItems } from "@/components/layout/providers";
 import { formatPrice } from "@/lib/utils";
 
 export default function CartPage() {
-  const { cart } = useStore();
-  const items = cart.map((item) => ({ ...item, product: products.find((product) => product.id === item.productId)! }));
+  const items = useCartItems();
   const subtotal = items.reduce((sum, item) => sum + (item.product.salePrice ?? item.product.price) * item.quantity, 0);
 
   return (
@@ -18,7 +16,7 @@ export default function CartPage() {
           <h1 className="mt-5 font-display text-6xl uppercase md:text-9xl">Checkout.</h1>
           <div className="mt-10 divide-y divide-white/10">
             {items.map((item) => (
-              <div key={`${item.productId}-${item.size}`} className="flex gap-5 py-6">
+              <div key={`${item.productId}-${item.size}-${item.color}`} className="flex gap-5 py-6">
                 <Image src={item.product.images[0]} alt={item.product.name} width={120} height={150} className="h-36 w-28 rounded-md object-cover" />
                 <div>
                   <p>{item.product.name}</p>

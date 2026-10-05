@@ -2,18 +2,19 @@
 
 import { SlidersHorizontal, Grid2X2, List } from "lucide-react";
 import { useMemo, useState } from "react";
-import { categories, products } from "@/lib/data";
+import type { Product } from "@/types/product";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "./product-card";
 
-export function ShopGrid() {
+export function ShopGrid({ products }: { products: Product[] }) {
   const [category, setCategory] = useState("All");
   const [sort, setSort] = useState("Newest");
   const [compact, setCompact] = useState(false);
+  const categories = useMemo(() => [...new Set(products.map((product) => product.category))], [products]);
   const filtered = useMemo(() => {
     const items = category === "All" ? [...products] : products.filter((product) => product.category === category);
     return items.sort((a, b) => (sort === "Price" ? a.price - b.price : sort === "Popular" ? b.images.length - a.images.length : 0));
-  }, [category, sort]);
+  }, [products, category, sort]);
 
   return (
     <section className="px-5 py-10 md:px-8">
@@ -38,7 +39,7 @@ export function ShopGrid() {
           </div>
         </div>
         <div className={cn("grid gap-x-5 gap-y-12", compact ? "md:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4")}>
-          {filtered.map((product) => <ProductCard key={product.id} product={product} />)}
+          {filtered.map((product) => <ProductCard key={product.slug} product={product} />)}
         </div>
         <div className="mt-16 grid grid-cols-2 gap-5 sm:grid-cols-4">
           {Array.from({ length: 4 }).map((_, index) => <div key={index} className="h-24 animate-pulse rounded-lg bg-white/[.04]" />)}

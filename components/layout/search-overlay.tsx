@@ -4,13 +4,14 @@ import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMemo, useState } from "react";
-import { products } from "@/lib/data";
+import { useStore } from "./providers";
 
 export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [query, setQuery] = useState("");
+  const { products } = useStore();
   const matches = useMemo(
     () => products.filter((product) => `${product.name} ${product.category}`.toLowerCase().includes(query.toLowerCase())).slice(0, 5),
-    [query]
+    [query, products]
   );
 
   return (
@@ -39,9 +40,9 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
             <div className="mt-10 grid gap-3">
               {(query ? matches : products.slice(0, 4)).map((product) => (
                 <Link
-                  href={`/product/${product.id}`}
+                  href={`/product/${product.slug}`}
                   onClick={onClose}
-                  key={product.id}
+                  key={product.slug}
                   className="flex items-center justify-between border-b border-white/10 py-5 text-white/70 transition hover:text-white"
                 >
                   <span>{product.name}</span>

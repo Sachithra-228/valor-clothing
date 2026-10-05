@@ -44,10 +44,10 @@ export function ProductActions({ product }: { product: Product }) {
         </div>
       </div>
       <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
-        <Button disabled={!product.inStock} onClick={() => addToCart({ productId: product.id, color, size, quantity })} className="w-full">
+        <Button disabled={!product.inStock} onClick={() => addToCart({ productId: product.slug, color, size, quantity })} className="w-full">
           <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4" /> Add to Cart</span>
         </Button>
-        <button aria-label="Wishlist" onClick={() => toggleWishlist(product.id)} className={cn("h-12 rounded-full border border-white/15 px-5", wishlist.includes(product.id) && "bg-white text-black")}>
+        <button aria-label="Wishlist" onClick={() => toggleWishlist(product.slug)} className={cn("h-12 rounded-full border border-white/15 px-5", wishlist.includes(product.slug) && "bg-white text-black")}>
           <Heart className="h-5 w-5" />
         </button>
       </div>

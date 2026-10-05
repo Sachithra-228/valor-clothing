@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { ShopGrid } from "@/components/shop/shop-grid";
+import { getProducts } from "@/lib/products";
 
 export const metadata: Metadata = { title: "Shop" };
+export const dynamic = "force-dynamic";
 
-export default function ShopPage() {
+export default async function ShopPage() {
+  const products = await getProducts();
+
   return (
     <main className="pt-28">
       <section className="px-5 py-12 md:px-8">
@@ -12,7 +16,7 @@ export default function ShopPage() {
           <h1 className="mt-4 max-w-5xl font-display text-6xl uppercase leading-none md:text-9xl">Luxury essentials for severe wardrobes.</h1>
         </div>
       </section>
-      <ShopGrid />
+      <ShopGrid products={products} />
     </main>
   );
 }
