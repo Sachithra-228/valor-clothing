@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Heart, ShoppingBag, Zap } from "lucide-react";
 import type { Product } from "@/types/product";
@@ -11,6 +12,7 @@ export function ProductActions({ product }: { product: Product }) {
   const [size, setSize] = useState(product.sizes[0]);
   const [color, setColor] = useState(product.colors[0]);
   const [quantity, setQuantity] = useState(1);
+  const router = useRouter();
   const { addToCart, toggleWishlist, wishlist } = useStore();
 
   return (
@@ -51,7 +53,15 @@ export function ProductActions({ product }: { product: Product }) {
           <Heart className="h-5 w-5" />
         </button>
       </div>
-      <Button variant="outline" className="w-full">
+      <Button
+        variant="outline"
+        disabled={!product.inStock}
+        onClick={() => {
+          addToCart({ productId: product.slug, color, size, quantity });
+          router.push("/cart");
+        }}
+        className="w-full"
+      >
         <span className="flex items-center gap-2"><Zap className="h-4 w-4" /> Buy Now</span>
       </Button>
     </div>

@@ -28,12 +28,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="text-xs uppercase tracking-[.24em] text-white/40">{product.collection}</p>
           <h1 className="mt-4 font-display text-5xl uppercase leading-none md:text-7xl">{product.name}</h1>
           <p className="mt-5 text-2xl">{formatPrice(product.salePrice ?? product.price)}</p>
-          <p className="mt-6 text-sm leading-7 text-white/58">{product.description}</p>
-          <div className="my-8 grid grid-cols-3 gap-3 text-center text-xs uppercase tracking-[.16em] text-white/50">
-            <div className="rounded-md border border-white/10 p-4">360 View</div>
-            <div className="rounded-md border border-white/10 p-4">Zoom</div>
-            <div className="rounded-md border border-white/10 p-4">{product.inStock ? "In Stock" : "Waitlist"}</div>
-          </div>
+          <p className="mb-8 mt-6 text-sm leading-7 text-white/58">{product.description}</p>
           <ProductActions product={product} />
           <div className="mt-10">
             <Accordion
