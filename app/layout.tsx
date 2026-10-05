@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { CustomCursor } from "@/components/animations/cursor";
-import { SmoothScroll } from "@/components/animations/smooth-scroll";
-import { Footer } from "@/components/layout/footer";
-import { Navbar } from "@/components/layout/navbar";
-import { StoreProvider } from "@/components/layout/providers";
 
 export const metadata: Metadata = {
   title: {
@@ -23,15 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="noise mobile-safe">
-        <StoreProvider>
-          <SmoothScroll />
-          <CustomCursor />
-          <Navbar />
-          {children}
-          <Footer />
-        </StoreProvider>
-      </body>
+      <body className="noise mobile-safe">{children}</body>
     </html>
   );
 }

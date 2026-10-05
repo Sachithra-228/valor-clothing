@@ -32,7 +32,10 @@ export function Footer() {
         </form>
       </div>
       <div className="mx-auto mt-14 flex max-w-[1500px] justify-between border-t border-white/10 pt-6 text-xs uppercase tracking-[.2em] text-white/35">
-        <span>© 2026 VALOR</span>
+        <span>
+          © 2026 VALOR
+          <Link href="/admin" className="ml-4 text-white/15 transition hover:text-white/60">Admin</Link>
+        </span>
         <span>Colombo / Worldwide</span>
       </div>
     </footer>
